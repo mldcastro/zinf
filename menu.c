@@ -1,10 +1,11 @@
 #include <raylib.h>
 
-typedef struct {
-    bool display;
-    bool startGame;
-    bool openScoreboard;
-    bool exitGame;
+// struct  ndo nosso "menu" recebe 
+typedef struct {        
+    bool display;        // display deve ser exibir
+    bool startGame;      // startGame para um novo jogo
+    bool openScoreboard; // scoreboard para a placar 
+    bool exitGame;       // exitGame para sair
 } Menu;
 
 void DisplayMenu(Menu *menu, int screenWidth, int screenHeight);
