@@ -1,6 +1,6 @@
-#ifndef _MENU_H
+#ifndef MENU_H
 
-#define _MENU_H
+#define MENU_H
 
 // Esta struct irá controlar os estados do Menu do jogo
 typedef struct {
