@@ -33,7 +33,7 @@ int main() {
             BeginDrawing();
 
             ClearBackground(GRAY);
-            DrawText("You pressed ENTER", screenWidth / 2, screenHeight / 2, 30, GREEN);
+            DrawText("You pressed ENTER", screenWidth / 2, screenHeight / 2, 30, YELLOW);
 
             EndDrawing();
 
@@ -41,7 +41,7 @@ int main() {
             BeginDrawing();
 
             ClearBackground(YELLOW);
-            DrawText("You pressed S", screenWidth / 2, screenHeight / 2, 30, BLUE);
+            DrawText("You pressed S", screenWidth / 2, screenHeight / 2, 30, YELLOW);
 
             EndDrawing();
         }
@@ -65,11 +65,13 @@ void DisplayMenu(Menu *menu, int screenWidth, int screenHeight) {
         BeginDrawing();
 
         ClearBackground(BLACK);
-        DrawTextureEx(linkSprite, spritePosition, spriteRotation, spriteScale, WHITE);
-        DrawText("ZINF", width, initialHeight - 350, 160, WHITE);
-        DrawText("Press ENTER to start", width, initialHeight, 30, WHITE);
-        DrawText("Press S to enter the Scoreboard", width, initialHeight + 75, 30, WHITE);
-        DrawText("Press X to exit", width, initialHeight + 2 * 75, 30, WHITE);
+        DrawTextureEx(linkSprite, spritePosition, spriteRotation, spriteScale, YELLOW);
+        int textWidth = MeasureText("ZINF", 160);
+        int xPos = screenWidth / 2 - textWidth / 2;
+        DrawText("ZINF", xPos, initialHeight - 250, 160, YELLOW);
+        DrawText("Press ENTER to start", width, initialHeight, 30, YELLOW);
+        DrawText("Press S to enter the Scoreboard", width, initialHeight + 75, 30, YELLOW);
+        DrawText("Press X to exit", width, initialHeight + 2 * 75, 30, YELLOW);
 
         EndDrawing();
 
