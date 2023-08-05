@@ -1,10 +1,10 @@
 #include <raylib.h>
 
-// struct  ndo nosso "menu" recebe 
-typedef struct {        
+// struct  ndo nosso "menu" recebe
+typedef struct {
     bool display;        // display deve ser exibir
     bool startGame;      // startGame para um novo jogo
-    bool openScoreboard; // scoreboard para a placar 
+    bool openScoreboard; // scoreboard para a placar
     bool exitGame;       // exitGame para sair
 } Menu;
 
@@ -65,11 +65,15 @@ void DisplayMenu(Menu *menu, int screenWidth, int screenHeight) {
         BeginDrawing();
 
         ClearBackground(BLACK);
-        DrawTextureEx(linkSprite, spritePosition, spriteRotation, spriteScale, WHITE);
-        DrawText("ZINF", width, initialHeight - 350, 160, WHITE);
-        DrawText("Press ENTER to start", width, initialHeight, 30, WHITE);
-        DrawText("Press S to enter the Scoreboard", width, initialHeight + 75, 30, WHITE);
-        DrawText("Press X to exit", width, initialHeight + 2 * 75, 30, WHITE);
+        DrawTextureEx(linkSprite, spritePosition, spriteRotation, spriteScale, YELLOW);
+
+        int textWidth = MeasureText("ZINF", 160);
+        int xPos = screenWidth / 2 - textWidth / 2;
+        DrawText("ZINF", xPos, initialHeight - 250, 160, YELLOW);
+
+        DrawText("Press ENTER to start", width, initialHeight, 30, YELLOW);
+        DrawText("Press S to enter the Scoreboard", width, initialHeight + 75, 30, YELLOW);
+        DrawText("Press X to exit", width, initialHeight + 2 * 75, 30, YELLOW);
 
         EndDrawing();
 
