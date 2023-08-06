@@ -3,20 +3,24 @@
 
 #include "ranking.h"
 
-void MoveScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SCORES]) {
+void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SCORES]) {
+    // Esta função lê o arquivo de pontuações e copia todas as pontuações nele
+    // para um array de struct Score. Isto é feito para facilitar o trabalho com as
+    // pontuações (verificação de valor, ordenação, salvamento).
     FILE *rankingFile;
     rankingFile = fopen(rankingFileName, "rb");
 
     if (rankingFile == NULL) {
         printf("Could not open the file.\n");
-        return;
+        return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
-    Score buffer;
+    Score buffer; // Definindo um buffer para guardar os conteúdos da leitura do arquivo.
 
     for (int i = 0; i < MAX_TOP_SCORES; i++) {
         if (fread(&buffer, sizeof(Score), 1, rankingFile) == 1) {
-            destinationArray[i] = buffer;
+            destinationArray[i] =
+                buffer; // Aqui estamos copiando o valor do buffer para uma célula do array.
         }
     }
 
@@ -24,18 +28,21 @@ void MoveScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SC
 }
 
 void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]) {
+    // Se houve modificação na tabela de pontuações, então essa função irá salvar essas
+    // mudanças no arquivo de pontuações.
     FILE *rankingFile;
     rankingFile = fopen(rankingFileName, "rb+");
 
     if (rankingFile == NULL) {
         printf("Could not open the file.\n");
-        return;
+        return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
+    // Neste loop estamos sobrescrevendo cada uma das pontuações no arquivo de pontuações
+    // com as pontuações contidas no array scores.
     for (int i = 0; i < MAX_TOP_SCORES; i++) {
         if (fwrite(&scores[i], sizeof(Score), 1, rankingFile) != 1) {
             printf("Could not write the file.\n");
-            break;
         }
     }
 
@@ -43,17 +50,30 @@ void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]) {
 }
 
 void AddNewScoreToRanking(Score newScore, char rankingFileName[]) {
+    // Se a nova pontuação for maior do que a menor pontuação no Top 5 atual,
+    // então devemos atualizar o Top 5. Esta função faz isso.
     Score scores[MAX_TOP_SCORES];
-    MoveScoresToArray(rankingFileName, scores);
+    CopyScoresToArray(rankingFileName, scores); // Copiando as pontuações do arquivo para um array.
 
+    // As pontuações no arquivo já estão ordenadas, de maneira que quando copiamos as pontuações
+    // para um array, a pontuação mais alta está no índice 0 e a mais baixa está no último índice,
+    // isto é, o índice de valor igual ao comprimento do array menos 1. Se a nova pontuação for
+    // maior do que a pontuação no último índice, então substituímos essa última pontuação com
+    // a nova pontuação, caso contrário não é feito nada e a função acaba.
     if (newScore.value > scores[MAX_TOP_SCORES - 1].value) {
         scores[MAX_TOP_SCORES - 1] = newScore;
     } else {
         return;
     }
 
-    Score tmpScore;
+    Score tmpScore; // Variável auxiliar para conseguirmos ordenar o array.
 
+    // Este loop ordena o array de pontuações. O loop começa do penúltimo índice do array
+    // pois o último índice está associado à nova pontuação. Na primeira iteração checamos
+    // se a nova pontuação é maior que a penúltima. Se não for, então o array já está ordenado
+    // e o loop acaba, se for então trocamos as duas pontuações de lugar e o loop continua.
+    // Esse processo continua até a nova pontuação chegar na primeira posição ou até chegar
+    // em uma posição onde ela seja menor do que a próxima.
     for (int i = MAX_TOP_SCORES - 2; i >= 0; i--) {
         if (scores[i].value < newScore.value) {
             tmpScore = scores[i];
@@ -64,32 +84,37 @@ void AddNewScoreToRanking(Score newScore, char rankingFileName[]) {
         }
     }
 
-    SaveScores(scores, rankingFileName);
+    SaveScores(scores, rankingFileName); // Salva a nova organização de pontuações.
 }
 
 void ShowScores(char rankingFileName[]) {
+    // Esta função irá mostrar o Top 5 de pontuações caso o usuário selecione
+    // a opção da tabela de pontuações no menu.
     FILE *rankingFile;
     rankingFile = fopen(rankingFileName, "rb");
 
     if (rankingFile == NULL) {
         printf("Could not open the file.\n");
-        return;
+        return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
-    Score buffer;
+    Score buffer; // Definindo um buffer para guardar os conteúdos da leitura do arquivo.
 
     BeginDrawing();
     ClearBackground(BLACK);
 
-    int initialHeight = 300;
-    int textWidth = MeasureText("High Scores", 80);
-    int xPos = GetScreenWidth() / 2 - textWidth / 2;
-    DrawText("High Scores", xPos, 100, 80, YELLOW);
+    const char title[] = "High Scores";
+    const int titleSize = 80;
+    const int titleWidth = MeasureText(title, titleSize);
+    const int titleXPosition = GetScreenWidth() / 2 - titleWidth / 2;
+    DrawText(title, titleXPosition, 100, titleSize, YELLOW);
+
+    const int initialYPosition = 300;
 
     for (int i = 0; i < MAX_TOP_SCORES; i++) {
         if (fread(&buffer, sizeof(Score), 1, rankingFile) == 1) {
-            DrawText(TextFormat("%-20s", buffer.name), 100, initialHeight + i * 75, 30, YELLOW);
-            DrawText(TextFormat("%10d", buffer.value), 800, initialHeight + i * 75, 30, YELLOW);
+            DrawText(TextFormat("%-20s", buffer.name), 100, initialYPosition + i * 75, 30, YELLOW);
+            DrawText(TextFormat("%10d", buffer.value), 800, initialYPosition + i * 75, 30, YELLOW);
         }
     }
 
