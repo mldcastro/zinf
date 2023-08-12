@@ -1,6 +1,7 @@
 #include <raylib.h>
 
 #include "menu.h"
+#include "ranking.h"
 
 int main() {
     const int screenWidth = 1200;
@@ -30,12 +31,7 @@ int main() {
             EndDrawing();
 
         } else if (menu.openScoreboard) {
-            BeginDrawing();
-
-            ClearBackground(YELLOW);
-            DrawText("You pressed S", screenWidth / 2, screenHeight / 2, 30, BLUE);
-
-            EndDrawing();
+            ShowScores(RANKING_FILE_NAME);
         }
     }
 
