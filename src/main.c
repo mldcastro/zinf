@@ -2,6 +2,7 @@
 
 #include "menu.h"
 #include "ranking.h"
+#include "map.h"
 
 int main() {
     const int screenWidth = 1200;
@@ -10,6 +11,11 @@ int main() {
     bool exitWindow = false;
 
     Menu menu = {true, false, false, false};
+
+    char levelFile[] = "levels/level_1.txt";
+    char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
+
+    LoadLevelLayoutFromFile(levelFile, layoutMatrix);
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -25,8 +31,10 @@ int main() {
         if (menu.startGame) {
             BeginDrawing();
 
-            ClearBackground(GRAY);
-            DrawText("You pressed ENTER", screenWidth / 2, screenHeight / 2, 30, GREEN);
+            ClearBackground(BLACK);
+
+            DrawStatusBar(3, 1, 100);
+            DrawMapFromMatrix(layoutMatrix);
 
             EndDrawing();
 
