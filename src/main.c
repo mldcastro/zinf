@@ -1,5 +1,6 @@
 #include <raylib.h>
 
+#include "level.h"
 #include "menu.h"
 #include "ranking.h"
 
@@ -10,6 +11,14 @@ int main() {
     bool exitWindow = false;
 
     Menu menu = {true, false, false, false};
+
+    char levelFile[] = "levels/level_1.txt";
+    char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
+    int lives = 3;
+    int level = 1;
+    int score = 0;
+
+    LoadLevelLayoutFromFile(levelFile, layoutMatrix);
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -25,8 +34,10 @@ int main() {
         if (menu.startGame) {
             BeginDrawing();
 
-            ClearBackground(GRAY);
-            DrawText("You pressed ENTER", screenWidth / 2, screenHeight / 2, 30, GREEN);
+            ClearBackground(BLACK);
+
+            DrawStatusBar(lives, level, score);
+            DrawMapFromMatrix(layoutMatrix);
 
             EndDrawing();
 
