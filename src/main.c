@@ -1,8 +1,8 @@
 #include <raylib.h>
 
+#include "map.h"
 #include "menu.h"
 #include "ranking.h"
-#include "map.h"
 
 int main() {
     const int screenWidth = 1200;

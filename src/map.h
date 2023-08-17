@@ -12,4 +12,4 @@ void DrawMapFromMatrix(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]);
 
 void DrawStatusBar(int lives, int level, int score);
 
-#endif  // MAP_H
+#endif // MAP_H
