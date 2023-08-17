@@ -1,6 +1,6 @@
 #include <raylib.h>
 
-#include "map.h"
+#include "level.h"
 #include "menu.h"
 #include "ranking.h"
 
@@ -14,6 +14,9 @@ int main() {
 
     char levelFile[] = "levels/level_1.txt";
     char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
+    int lives = 3;
+    int level = 1;
+    int score = 0;
 
     LoadLevelLayoutFromFile(levelFile, layoutMatrix);
 
@@ -33,7 +36,7 @@ int main() {
 
             ClearBackground(BLACK);
 
-            DrawStatusBar(3, 1, 100);
+            DrawStatusBar(lives, level, score);
             DrawMapFromMatrix(layoutMatrix);
 
             EndDrawing();

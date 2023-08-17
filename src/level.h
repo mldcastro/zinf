@@ -1,6 +1,6 @@
-#ifndef MAP_H
+#ifndef LEVEL_H
 
-#define MAP_H
+#define LEVEL_H
 #define LAYOUT_ROWS 16
 #define LAYOUT_COLUMNS 24
 #define TILE_SIZE 50
@@ -12,4 +12,4 @@ void DrawMapFromMatrix(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]);
 
 void DrawStatusBar(int lives, int level, int score);
 
-#endif // MAP_H
+#endif // LEVEL_H
