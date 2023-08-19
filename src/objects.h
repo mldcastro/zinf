@@ -13,6 +13,4 @@ typedef struct {
 
 void UpdatePlayer(Player *player, float delta);
 
-void DrawPlayer(Player *player);
-
 #endif // OBJECTS_H

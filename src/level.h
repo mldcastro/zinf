@@ -1,5 +1,7 @@
 #ifndef LEVEL_H
 
+#include "objects.h"
+
 #define LEVEL_H
 #define LAYOUT_ROWS 16
 #define LAYOUT_COLUMNS 24

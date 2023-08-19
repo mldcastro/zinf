@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "level.h"
+#include "objects.h"
 
 void LoadLevelLayoutFromFile(char levelFileName[], char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]) {
     FILE *levelFile;
@@ -30,9 +31,7 @@ void DrawMapFromMatrix(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]) {
 
             DrawTexture(groundSprite, col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT, WHITE);
 
-            if (tile == 'J') {
-                sprite = LoadTexture("sprites/Link_right.png");
-            } else if (tile == 'P') {
+            if (tile == 'P') {
                 sprite = LoadTexture("sprites/Obstacle.png");
             } else if (tile == 'M') {
                 sprite = LoadTexture("sprites/Enemy_left.png");

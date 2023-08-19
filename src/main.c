@@ -10,11 +10,10 @@ int main() {
     const int screenHeight = 860;
 
     bool exitWindow = false;
-    bool shouldLoadLevel = true;
 
     Menu menu = {true, false, false, false};
     Player player = {
-        (Vector2){100, 300},
+        (Vector2){0, 100},
         0,
         true
     };
@@ -37,17 +36,16 @@ int main() {
         DisplayMenu(&menu, screenWidth, screenHeight);
 
         if (menu.startGame) {
-            if (shouldLoadLevel) {
-                LoadLevelLayoutFromFile(levelFile, layoutMatrix);
-                DrawMapFromMatrix(layoutMatrix);
-            }
-            float deltaTime = GetFrameTime();
-            
             BeginDrawing();
 
             ClearBackground(BLACK);
 
+            LoadLevelLayoutFromFile(levelFile, layoutMatrix);
+            DrawMapFromMatrix(layoutMatrix);
             DrawStatusBar(lives, level, score);
+
+            float deltaTime = GetFrameTime();
+
             UpdatePlayer(&player, deltaTime);
 
             EndDrawing();
