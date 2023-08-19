@@ -24,3 +24,28 @@ void UpdatePlayer(Player *player, float delta) {
 
     DrawTexture(sprite, player->position.x, player->position.y, WHITE);
 }
+
+void UpdateEnemy(Enemy *enemy, float delta) {
+    Texture2D sprite;
+
+    if (enemy->moveHorizontally) {
+        if (enemy->canWalk) {
+            enemy->position.x -= ENEMY_WALK_SPEED * delta;
+            sprite = LoadTexture("sprites/Enemy_left.png");
+        } else {
+            enemy->position.x += ENEMY_WALK_SPEED * delta;
+            sprite = LoadTexture("sprites/Enemy_left.png");
+        }
+    }
+    else {
+        if (enemy->canWalk) {
+            enemy->position.y -= ENEMY_WALK_SPEED * delta;
+            sprite = LoadTexture("sprites/Enemy_front.png");
+        } else {
+            enemy->position.y += ENEMY_WALK_SPEED * delta;
+            sprite = LoadTexture("sprites/Enemy_back.png");
+        }
+    }
+
+    DrawTexture(sprite, enemy->position.x, enemy->position.y, WHITE);
+}

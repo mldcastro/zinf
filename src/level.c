@@ -33,13 +33,32 @@ void DrawMapFromMatrix(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]) {
 
             if (tile == 'P') {
                 sprite = LoadTexture("sprites/Obstacle.png");
-            } else if (tile == 'M') {
-                sprite = LoadTexture("sprites/Enemy_left.png");
             } else {
                 continue;
             }
 
             DrawTexture(sprite, col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT, WHITE);
+        }
+    }
+}
+
+void ReadEnemies(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS], Enemy enemies[MAX_NUMBER_OF_ENEMIES]) {
+    int enemyCount = 0;
+
+    for (int row = 0; row < LAYOUT_ROWS; row++) {
+        for (int col = 0; col < LAYOUT_COLUMNS; col++) {
+            char tile = layoutMatrix[row][col];
+
+            if (tile == 'M') {
+                Enemy enemy = {
+                    (Vector2) {col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT},
+                    true,
+                    true
+                };
+
+                enemies[enemyCount] = enemy;
+                enemyCount++;
+            }
         }
     }
 }

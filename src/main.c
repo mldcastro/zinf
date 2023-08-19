@@ -10,13 +10,14 @@ int main() {
     const int screenHeight = 860;
 
     bool exitWindow = false;
+    bool shouldReadLayoutFile = true;
 
     Menu menu = {true, false, false, false};
     Player player = {
         (Vector2){0, 100},
-        0,
         true
     };
+    Enemy enemies[MAX_NUMBER_OF_ENEMIES];
 
     char levelFile[] = "levels/level_1.txt";
     char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
@@ -40,13 +41,23 @@ int main() {
 
             ClearBackground(BLACK);
 
-            LoadLevelLayoutFromFile(levelFile, layoutMatrix);
+            if (shouldReadLayoutFile) {
+                LoadLevelLayoutFromFile(levelFile, layoutMatrix);
+                ReadEnemies(layoutMatrix, enemies);
+
+                shouldReadLayoutFile = false;
+            }
+
             DrawMapFromMatrix(layoutMatrix);
             DrawStatusBar(lives, level, score);
 
             float deltaTime = GetFrameTime();
 
             UpdatePlayer(&player, deltaTime);
+
+            for (int i = 0; i < sizeof(enemies) / sizeof(enemies[0]); i++) {
+                UpdateEnemy(&enemies[i], deltaTime);
+            }
 
             EndDrawing();
 
