@@ -19,8 +19,8 @@ void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SC
 
     for (int i = 0; i < MAX_TOP_SCORES; i++) {
         if (fread(&buffer, sizeof(Score), 1, rankingFile) == 1) {
-            destinationArray[i] =
-                buffer; // Aqui estamos copiando o valor do buffer para uma célula do array.
+            // Aqui estamos copiando o valor do buffer para uma célula do array.
+            destinationArray[i] = buffer;
         }
     }
 
