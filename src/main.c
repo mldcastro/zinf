@@ -2,8 +2,8 @@
 
 #include "level.h"
 #include "menu.h"
-#include "ranking.h"
 #include "objects.h"
+#include "ranking.h"
 
 int main() {
     const int screenWidth = 1200;
@@ -13,10 +13,7 @@ int main() {
     bool shouldReadLayoutFile = true;
 
     Menu menu = {true, false, false, false};
-    Player player = {
-        (Vector2){0, 100},
-        true
-    };
+    Player player = {(Vector2){0, 100}, true};
     Enemy enemies[MAX_NUMBER_OF_ENEMIES];
 
     char levelFile[] = "levels/level_1.txt";

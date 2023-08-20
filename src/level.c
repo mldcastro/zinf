@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "level.h"
-#include "objects.h"
 
 void LoadLevelLayoutFromFile(char levelFileName[], char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]) {
     FILE *levelFile;
@@ -38,27 +37,6 @@ void DrawMapFromMatrix(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS]) {
             }
 
             DrawTexture(sprite, col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT, WHITE);
-        }
-    }
-}
-
-void ReadEnemies(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS], Enemy enemies[MAX_NUMBER_OF_ENEMIES]) {
-    int enemyCount = 0;
-
-    for (int row = 0; row < LAYOUT_ROWS; row++) {
-        for (int col = 0; col < LAYOUT_COLUMNS; col++) {
-            char tile = layoutMatrix[row][col];
-
-            if (tile == 'M') {
-                Enemy enemy = {
-                    (Vector2) {col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT},
-                    true,
-                    true
-                };
-
-                enemies[enemyCount] = enemy;
-                enemyCount++;
-            }
         }
     }
 }
