@@ -15,7 +15,7 @@ typedef struct Player {
 
 typedef struct Enemy {
     Vector2 position;
-    bool canWalk;
+    bool reverse;
     bool moveHorizontally;
 } Enemy;
 
@@ -29,6 +29,8 @@ void UpdateEnemy(Enemy *enemy, float delta);
 
 void ReadEnemies(char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS], Enemy *enemy);
 
-bool IsBlocked(Player *player, Vector2 positionDelta);
+bool IsPlayerBlocked(Player *player, Vector2 deltaDirection);
+
+bool IsEnemyBlocked(Enemy *enemy, Vector2 deltaDirection);
 
 #endif // OBJECTS_H
