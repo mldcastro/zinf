@@ -2,7 +2,8 @@
 
 #include "menu.h"
 
-void DisplayMenu(Menu *menu, int screenWidth, int screenHeight) {
+void DisplayMenu(Menu *menu, int screenWidth, int screenHeight)
+{
     if (menu->display) {
         // Se a variável Menu.display for True, então devemos mostrar o menu na tela
 

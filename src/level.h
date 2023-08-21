@@ -14,11 +14,10 @@ typedef struct Layout {
     char matrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
 } Layout;
 
-void LoadLevelLayoutFromFile(
-    char levelFileName[],
-    Layout *layout,
-    Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+void LoadLevelLayoutFromFile(char levelFileName[],
+                             Layout *layout,
+                             Enemy enemies[MAX_NUMBER_OF_ENEMIES],
+                             Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
 void DrawMapFromMatrix(Layout *layout);
 
@@ -28,14 +27,12 @@ void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
-bool IsPlayerBlocked(
-    Player *player,
-    Vector2 deltaDirection,
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+bool IsPlayerBlocked(Player *player,
+                     Vector2 deltaDirection,
+                     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
-bool IsEnemyBlocked(
-    Enemy *enemy,
-    Vector2 deltaDirection,
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+bool IsEnemyBlocked(Enemy *enemy,
+                    Vector2 deltaDirection,
+                    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
 #endif // LEVEL_H

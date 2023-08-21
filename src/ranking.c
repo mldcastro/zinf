@@ -3,7 +3,8 @@
 
 #include "ranking.h"
 
-void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SCORES]) {
+void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SCORES])
+{
     // Esta função lê o arquivo de pontuações e copia todas as pontuações nele
     // para um array de struct Score. Isto é feito para facilitar o trabalho com as
     // pontuações (verificação de valor, ordenação, salvamento).
@@ -27,7 +28,8 @@ void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SC
     fclose(rankingFile);
 }
 
-void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]) {
+void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[])
+{
     // Se houve modificação na tabela de pontuações, então essa função irá salvar essas
     // mudanças no arquivo de pontuações.
     FILE *rankingFile;
@@ -49,7 +51,8 @@ void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]) {
     fclose(rankingFile);
 }
 
-void AddNewScoreToRanking(Score newScore, char rankingFileName[]) {
+void AddNewScoreToRanking(Score newScore, char rankingFileName[])
+{
     // Se a nova pontuação for maior do que a menor pontuação no Top 5 atual,
     // então devemos atualizar o Top 5. Esta função faz isso.
     Score scores[MAX_TOP_SCORES];
@@ -87,7 +90,8 @@ void AddNewScoreToRanking(Score newScore, char rankingFileName[]) {
     SaveScores(scores, rankingFileName); // Salva a nova organização de pontuações.
 }
 
-void ShowScores(char rankingFileName[]) {
+void ShowScores(char rankingFileName[])
+{
     // Esta função irá mostrar o Top 5 de pontuações caso o usuário selecione
     // a opção da tabela de pontuações no menu.
     FILE *rankingFile;

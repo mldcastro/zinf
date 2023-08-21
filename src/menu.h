@@ -10,9 +10,8 @@ typedef struct {
     bool exitGame;       // Variável exitGame para sair do menu e fechar a janela
 } Menu;
 
-void DisplayMenu(
-    Menu *menu,
-    int screenWidth,
-    int screenHeight); // Função que irá mostrar o menu na tela
+void DisplayMenu(Menu *menu,
+                 int screenWidth,
+                 int screenHeight); // Função que irá mostrar o menu na tela
 
 #endif

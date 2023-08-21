@@ -4,7 +4,8 @@
 #include "menu.h"
 #include "ranking.h"
 
-int main() {
+int main()
+{
     const int screenWidth = 1200;
     const int screenHeight = 860;
 

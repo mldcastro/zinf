@@ -3,11 +3,11 @@
 
 #include "level.h"
 
-void LoadLevelLayoutFromFile(
-    char levelFileName[],
-    Layout *layout,
-    Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]) {
+void LoadLevelLayoutFromFile(char levelFileName[],
+                             Layout *layout,
+                             Enemy enemies[MAX_NUMBER_OF_ENEMIES],
+                             Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+{
     FILE *levelFile;
     levelFile = fopen(levelFileName, "r");
 
@@ -54,7 +54,8 @@ void LoadLevelLayoutFromFile(
     fclose(levelFile);
 }
 
-void DrawMapFromMatrix(Layout *layout) {
+void DrawMapFromMatrix(Layout *layout)
+{
     const Texture2D obstacleSprite = LoadTexture("sprites/Obstacle.png");
     const Texture2D groundSprite = LoadTexture("sprites/Ground.png");
 
@@ -66,16 +67,14 @@ void DrawMapFromMatrix(Layout *layout) {
 
             if (tile == 'P') {
                 DrawTexture(
-                    obstacleSprite,
-                    col * TILE_SIZE,
-                    row * TILE_SIZE + STATUS_BAR_HEIGHT,
-                    WHITE);
+                    obstacleSprite, col * TILE_SIZE, row * TILE_SIZE + STATUS_BAR_HEIGHT, WHITE);
             }
         }
     }
 }
 
-void DrawStatusBar(int lives, int level, int score) {
+void DrawStatusBar(int lives, int level, int score)
+{
     int initialXPosition = 30;
     const int yPosition = 20;
 
@@ -84,7 +83,8 @@ void DrawStatusBar(int lives, int level, int score) {
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
 }
 
-void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]) {
+void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+{
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
 
     float positionDelta = PLAYER_WALK_SPEED * delta;
@@ -121,15 +121,14 @@ void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
 }
 
-bool IsPlayerBlocked(
-    Player *player,
-    Vector2 deltaDirection,
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]) {
-    Rectangle nextPosition = (Rectangle){
-        player->dimensions.x + deltaDirection.x,
-        player->dimensions.y + deltaDirection.y,
-        player->dimensions.width,
-        player->dimensions.height};
+bool IsPlayerBlocked(Player *player,
+                     Vector2 deltaDirection,
+                     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+{
+    Rectangle nextPosition = (Rectangle){player->dimensions.x + deltaDirection.x,
+                                         player->dimensions.y + deltaDirection.y,
+                                         player->dimensions.width,
+                                         player->dimensions.height};
 
     bool isPlayerLeavingScreen
         = (nextPosition.x < 0 || nextPosition.x + nextPosition.width > GetScreenWidth()
@@ -150,7 +149,8 @@ bool IsPlayerBlocked(
     return false;
 }
 
-void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]) {
+void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+{
     Texture2D sprite;
 
     float positionDelta = ENEMY_WALK_SPEED * delta;
@@ -193,15 +193,14 @@ void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBS
     DrawTexture(sprite, enemy->dimensions.x, enemy->dimensions.y, WHITE);
 }
 
-bool IsEnemyBlocked(
-    Enemy *enemy,
-    Vector2 deltaDirection,
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]) {
-    Rectangle nextPosition = (Rectangle){
-        enemy->dimensions.x + deltaDirection.x,
-        enemy->dimensions.y + deltaDirection.y,
-        enemy->dimensions.width,
-        enemy->dimensions.height};
+bool IsEnemyBlocked(Enemy *enemy,
+                    Vector2 deltaDirection,
+                    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+{
+    Rectangle nextPosition = (Rectangle){enemy->dimensions.x + deltaDirection.x,
+                                         enemy->dimensions.y + deltaDirection.y,
+                                         enemy->dimensions.width,
+                                         enemy->dimensions.height};
 
     bool isEnemyLeavingScreen
         = (nextPosition.x < 0 || nextPosition.x + nextPosition.width > GetScreenWidth()
