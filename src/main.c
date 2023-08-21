@@ -4,21 +4,24 @@
 #include "menu.h"
 #include "ranking.h"
 
-int main() {
+int main()
+{
     const int screenWidth = 1200;
     const int screenHeight = 860;
 
     bool exitWindow = false;
+    bool shouldReadLayoutFile = true;
 
     Menu menu = {true, false, false, false};
+    Player player = {(Rectangle){0, 100, TILE_SIZE, TILE_SIZE}, true};
+    Enemy enemies[MAX_NUMBER_OF_ENEMIES];
+    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES];
+    Layout layout;
 
     char levelFile[] = "levels/level_1.txt";
-    char layoutMatrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
     int lives = 3;
     int level = 1;
     int score = 0;
-
-    LoadLevelLayoutFromFile(levelFile, layoutMatrix);
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -36,8 +39,21 @@ int main() {
 
             ClearBackground(BLACK);
 
+            if (shouldReadLayoutFile) {
+                LoadLevelLayoutFromFile(levelFile, &layout, enemies, obstacles);
+                shouldReadLayoutFile = false;
+            }
+
+            DrawMapFromMatrix(&layout);
             DrawStatusBar(lives, level, score);
-            DrawMapFromMatrix(layoutMatrix);
+
+            float deltaTime = GetFrameTime();
+
+            UpdatePlayer(&player, deltaTime, obstacles);
+
+            for (int i = 0; i < sizeof(enemies) / sizeof(enemies[0]); i++) {
+                UpdateEnemy(&enemies[i], deltaTime, obstacles);
+            }
 
             EndDrawing();
 
