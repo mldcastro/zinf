@@ -126,3 +126,8 @@ void ShowScores(char rankingFileName[])
 
     fclose(rankingFile);
 }
+
+void ReadScoreName(Score *score)
+{
+    
+}

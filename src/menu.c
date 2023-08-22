@@ -5,17 +5,13 @@
 void DisplayMenu(Menu *menu, int screenWidth, int screenHeight)
 {
     if (menu->display) {
-        // Se a variável Menu.display for True, então devemos mostrar o menu na tela
-
         int initialHeight = 400;
         const int width = 100;
 
-        // Carregando o sprite para mostrar no menu
         Texture2D linkSprite = LoadTexture("sprites/Link_left.png");
-        // Vetor que define a posição do sprite no menu
         Vector2 spritePosition = {screenWidth - 400, screenHeight - 600};
-        float spriteRotation = 0.0f; // O sprite não será rotacionado
-        int spriteScale = 7; // O sprite tem dimensões de 50x50. Estamos aumentando a escala em 7x
+        float spriteRotation = 0.0f;
+        int spriteScale = 7;
 
         BeginDrawing();
 

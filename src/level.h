@@ -1,6 +1,8 @@
 #ifndef LEVEL_H
 
 #include "elements.h"
+#include "menu.h"
+#include "ranking.h"
 
 #define LEVEL_H
 #define LAYOUT_ROWS 16
@@ -23,7 +25,10 @@ void DrawMapFromMatrix(Layout *layout);
 
 void DrawStatusBar(int lives, int level, int score);
 
-void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+void UpdatePlayer(Player *player,
+                  float delta,
+                  Enemy enemies[MAX_NUMBER_OF_ENEMIES],
+                  Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
@@ -31,8 +36,12 @@ bool IsPlayerBlocked(Player *player,
                      Vector2 deltaDirection,
                      Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
+bool WasPlayerHit(Player *player, Enemy *enemy);
+
 bool IsEnemyBlocked(Enemy *enemy,
                     Vector2 deltaDirection,
                     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+
+void GameOver(Score *score, Menu *menu, Player *player);
 
 #endif // LEVEL_H

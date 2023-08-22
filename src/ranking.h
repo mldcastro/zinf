@@ -28,4 +28,6 @@ void CopyScoresToArray(char rankingFileName[], Score destinationArray[MAX_TOP_SC
 // Função que salva a nova tabela de pontuações no arquivo de pontuações.
 void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]);
 
+void ReadScoreName(Score *score);
+
 #endif // RANKING

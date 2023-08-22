@@ -83,7 +83,10 @@ void DrawStatusBar(int lives, int level, int score)
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
 }
 
-void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+void UpdatePlayer(Player *player,
+                  float delta,
+                  Enemy enemies[MAX_NUMBER_OF_ENEMIES],
+                  Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
 {
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
 
@@ -119,6 +122,12 @@ void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_
     }
 
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
+
+    for (int i = 0; i < MAX_NUMBER_OF_ENEMIES; i++) {
+        if (WasPlayerHit(player, &enemies[i])) {
+            player->lives -= 1;
+        }
+    }
 }
 
 bool IsPlayerBlocked(Player *player,
@@ -147,6 +156,11 @@ bool IsPlayerBlocked(Player *player,
     }
     player->canWalk = true;
     return false;
+}
+
+bool WasPlayerHit(Player *player, Enemy *enemy)
+{
+    return CheckCollisionRecs(player->dimensions, enemy->dimensions);
 }
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
@@ -218,4 +232,37 @@ bool IsEnemyBlocked(Enemy *enemy,
         }
     }
     return false;
+}
+
+void GameOver(Score *score, Menu *menu, Player *player)
+{
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    const char gameOverText[] = "Game Over";
+    const int gameOverTextSize = 160;
+    const char *scoreText = TextFormat("Your score was: %d", score->value);
+    const int scoreTextSize = 50;
+
+    DrawText(gameOverText,
+             GetScreenWidth() / 2 - MeasureText(gameOverText, gameOverTextSize) / 2,
+             100,
+             gameOverTextSize,
+             YELLOW);
+
+    DrawText(scoreText,
+             GetScreenWidth() / 2 - MeasureText(scoreText, scoreTextSize) / 2,
+             300,
+             scoreTextSize,
+             YELLOW);
+
+    EndDrawing();
+
+    menu->display = true;
+    menu->startGame = false;
+
+    player->lives = PLAYER_MAX_LIVES;
+
+    WaitTime(3);
 }
