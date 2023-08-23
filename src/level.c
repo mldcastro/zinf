@@ -98,27 +98,27 @@ void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, L
     float positionDelta = PLAYER_WALK_SPEED * delta;
     Vector2 deltaDirection = {0, 0};
 
-    if (IsKeyDown(KEY_LEFT)) {
+    if (IsKeyDown(KEY_A)) {
         deltaDirection = (Vector2){-positionDelta, 0};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x -= positionDelta;
             sprite = LoadTexture("sprites/Link_left.png");
         }
     }
-    if (IsKeyDown(KEY_RIGHT)) {
+    if (IsKeyDown(KEY_D)) {
         deltaDirection = (Vector2){positionDelta, 0};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x += positionDelta;
             sprite = LoadTexture("sprites/Link_right.png");
         }
     }
-    if (IsKeyDown(KEY_DOWN)) {
+    if (IsKeyDown(KEY_S)) {
         deltaDirection = (Vector2){0, positionDelta};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y += positionDelta;
         }
     }
-    if (IsKeyDown(KEY_UP)) {
+    if (IsKeyDown(KEY_W)) {
         deltaDirection = (Vector2){0, -positionDelta};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y -= positionDelta;
