@@ -59,6 +59,11 @@ int main()
 
         } else if (menu.openScoreboard) {
             ShowScores(RANKING_FILE_NAME);
+
+            if (IsKeyPressed(KEY_BACKSPACE)) {
+                menu.display = true;
+                menu.openScoreboard = false;
+            }
         }
     }
 
