@@ -91,9 +91,7 @@ void DrawStatusBar(int lives, int level, int score)
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
 }
 
-void UpdatePlayer(Player *player,
-                  float delta,
-                  EnvironmentObjects *envObjects)
+void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, Layout *layout)
 {
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
 
@@ -133,6 +131,7 @@ void UpdatePlayer(Player *player,
     for (int i = 0; i < envObjects->enemyCount; i++) {
         if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
             player->lives -= 1;
+            layout->shouldReadFile = true;
         }
     }
 }

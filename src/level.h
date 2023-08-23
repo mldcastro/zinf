@@ -12,6 +12,7 @@
 
 typedef struct Layout {
     char matrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
+    bool shouldReadFile;
 } Layout;
 
 void LoadLevelLayoutFromFile(char levelFileName[],
@@ -23,9 +24,7 @@ void DrawMapFromMatrix(Layout *layout);
 
 void DrawStatusBar(int lives, int level, int score);
 
-void UpdatePlayer(Player *player,
-                  float delta,
-                  EnvironmentObjects *envObjects);
+void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, Layout *layout);
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 

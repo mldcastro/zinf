@@ -10,7 +10,6 @@ int main()
     const int screenHeight = 860;
 
     bool exitWindow = false;
-    bool shouldReadLayoutFile = true;
 
     Menu menu;
     menu.display = true;
@@ -23,11 +22,12 @@ int main()
 
     EnvironmentObjects envObjects;
     Layout layout;
+    layout.shouldReadFile = true;
 
     char levelFile[] = "levels/level_1.txt";
     int level = 1;
     Score score;
-    score.value = 1700;
+    score.value = 0;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -45,16 +45,16 @@ int main()
 
             ClearBackground(BLACK);
 
-            if (shouldReadLayoutFile) {
+            if (layout.shouldReadFile) {
                 LoadLevelLayoutFromFile(levelFile, &layout, &player, &envObjects);
-                shouldReadLayoutFile = false;
+                layout.shouldReadFile = false;
             }
 
             DrawMapFromMatrix(&layout);
 
             float deltaTime = GetFrameTime();
 
-            UpdatePlayer(&player, deltaTime, &envObjects);
+            UpdatePlayer(&player, deltaTime, &envObjects, &layout);
 
             for (int i = 0; i < envObjects.enemyCount; i++) {
                 UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
@@ -75,7 +75,7 @@ int main()
 
         if (player.lives == 0) {
             GameOver(&score, &menu, &player);
-            shouldReadLayoutFile = true;
+            layout.shouldReadFile = true;
         }
     }
 
