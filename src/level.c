@@ -5,8 +5,8 @@
 
 void LoadLevelLayoutFromFile(char levelFileName[],
                              Layout *layout,
-                             Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-                             Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+                             Player *player,
+                             EnvironmentObjects *envObjects)
 {
     FILE *levelFile;
     levelFile = fopen(levelFileName, "r");
@@ -16,8 +16,8 @@ void LoadLevelLayoutFromFile(char levelFileName[],
         return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
-    int enemyCount = 0;
-    int obstacleCount = 0;
+    envObjects->enemyCount = 0;
+    envObjects->obstacleCount = 0;
 
     for (int row = 0; row < LAYOUT_ROWS; row++) {
         for (int col = 0; col < LAYOUT_COLUMNS; col++) {
@@ -34,8 +34,8 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 enemy.moveHorizontally = (bool)((row + col) % 2);
                 enemy.reverse = (bool)((row + col) % 2);
 
-                enemies[enemyCount] = enemy;
-                enemyCount++;
+                envObjects->enemies[envObjects->enemyCount] = enemy;
+                (envObjects->enemyCount)++;
             }
 
             if (tile == 'P') {
@@ -45,8 +45,16 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 obstacle.dimensions.width = TILE_SIZE;
                 obstacle.dimensions.height = TILE_SIZE;
 
-                obstacles[obstacleCount] = obstacle;
-                obstacleCount++;
+                envObjects->obstacles[envObjects->obstacleCount] = obstacle;
+                (envObjects->obstacleCount)++;
+            }
+
+            if (tile == 'J') {
+                player->dimensions.x = col * TILE_SIZE;
+                player->dimensions.y = row * TILE_SIZE + STATUS_BAR_HEIGHT;
+                player->dimensions.width = TILE_SIZE;
+                player->dimensions.height = TILE_SIZE;
+                player->canWalk = true;
             }
         }
     }
@@ -85,8 +93,7 @@ void DrawStatusBar(int lives, int level, int score)
 
 void UpdatePlayer(Player *player,
                   float delta,
-                  Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-                  Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+                  EnvironmentObjects *envObjects)
 {
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
 
@@ -95,27 +102,27 @@ void UpdatePlayer(Player *player,
 
     if (IsKeyDown(KEY_LEFT)) {
         deltaDirection = (Vector2){-positionDelta, 0};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x -= positionDelta;
             sprite = LoadTexture("sprites/Link_left.png");
         }
     }
     if (IsKeyDown(KEY_RIGHT)) {
         deltaDirection = (Vector2){positionDelta, 0};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x += positionDelta;
             sprite = LoadTexture("sprites/Link_right.png");
         }
     }
     if (IsKeyDown(KEY_DOWN)) {
         deltaDirection = (Vector2){0, positionDelta};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y += positionDelta;
         }
     }
     if (IsKeyDown(KEY_UP)) {
         deltaDirection = (Vector2){0, -positionDelta};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y -= positionDelta;
             sprite = LoadTexture("sprites/Link_back.png");
         }
@@ -123,8 +130,8 @@ void UpdatePlayer(Player *player,
 
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
 
-    for (int i = 0; i < MAX_NUMBER_OF_ENEMIES; i++) {
-        if (WasPlayerHit(player, &enemies[i])) {
+    for (int i = 0; i < envObjects->enemyCount; i++) {
+        if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
             player->lives -= 1;
         }
     }

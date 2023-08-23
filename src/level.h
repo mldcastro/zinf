@@ -9,8 +9,6 @@
 #define LAYOUT_COLUMNS 24
 #define TILE_SIZE 50
 #define STATUS_BAR_HEIGHT 60
-#define MAX_NUMBER_OF_ENEMIES 7
-#define MAX_NUMBER_OF_OBSTACLES 150
 
 typedef struct Layout {
     char matrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
@@ -18,8 +16,8 @@ typedef struct Layout {
 
 void LoadLevelLayoutFromFile(char levelFileName[],
                              Layout *layout,
-                             Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-                             Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+                             Player *player,
+                             EnvironmentObjects *envObjects);
 
 void DrawMapFromMatrix(Layout *layout);
 
@@ -27,8 +25,7 @@ void DrawStatusBar(int lives, int level, int score);
 
 void UpdatePlayer(Player *player,
                   float delta,
-                  Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-                  Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
+                  EnvironmentObjects *envObjects);
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 

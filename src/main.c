@@ -19,12 +19,9 @@ int main()
     menu.exitGame = false;
 
     Player player;
-    player.dimensions = (Rectangle){0, 100, TILE_SIZE, TILE_SIZE};
-    player.canWalk = true;
     player.lives = PLAYER_MAX_LIVES;
 
-    Enemy enemies[MAX_NUMBER_OF_ENEMIES];
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES];
+    EnvironmentObjects envObjects;
     Layout layout;
 
     char levelFile[] = "levels/level_1.txt";
@@ -49,7 +46,7 @@ int main()
             ClearBackground(BLACK);
 
             if (shouldReadLayoutFile) {
-                LoadLevelLayoutFromFile(levelFile, &layout, enemies, obstacles);
+                LoadLevelLayoutFromFile(levelFile, &layout, &player, &envObjects);
                 shouldReadLayoutFile = false;
             }
 
@@ -57,10 +54,10 @@ int main()
 
             float deltaTime = GetFrameTime();
 
-            UpdatePlayer(&player, deltaTime, enemies, obstacles);
+            UpdatePlayer(&player, deltaTime, &envObjects);
 
-            for (int i = 0; i < sizeof(enemies) / sizeof(enemies[0]); i++) {
-                UpdateEnemy(&enemies[i], deltaTime, obstacles);
+            for (int i = 0; i < envObjects.enemyCount; i++) {
+                UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
             }
 
             DrawStatusBar(player.lives, level, score.value);
