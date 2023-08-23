@@ -117,7 +117,7 @@ void ShowScores(char rankingFileName[])
 
     for (int i = 0; i < MAX_TOP_SCORES; i++) {
         if (fread(&buffer, sizeof(Score), 1, rankingFile) == 1) {
-            DrawText(TextFormat("%-20s", buffer.name), 100, initialYPosition + i * 75, 30, YELLOW);
+            DrawText(TextFormat("%-21s", buffer.name), 100, initialYPosition + i * 75, 30, YELLOW);
             DrawText(TextFormat("%10d", buffer.value), 800, initialYPosition + i * 75, 30, YELLOW);
         }
     }
@@ -129,5 +129,36 @@ void ShowScores(char rankingFileName[])
 
 void ReadScoreName(Score *score)
 {
-    
+    Rectangle textBox = {350, 400, 500, 80};
+    int letterCount = 0;
+
+    while (!IsKeyPressed(KEY_ENTER)) {
+        int key = GetCharPressed();
+
+        while (key > 0) {
+            // NOTE: Only allow keys in range [32..125]
+            if ((key >= 32) && (key <= 125) && (letterCount < NAME_MAX_LENGTH)) {
+                score->name[letterCount] = (char)key;
+                score->name[letterCount + 1] = '\0';
+                (letterCount)++;
+            }
+
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            (letterCount)--;
+            if (letterCount < 0)
+                letterCount = 0;
+            score->name[letterCount] = '\0';
+        }
+
+        BeginDrawing();
+
+        DrawRectangleRec(textBox, LIGHTGRAY);
+
+        DrawText(score->name, (int)textBox.x + 5, (int)textBox.y + 8, 40, MAROON);
+
+        EndDrawing();
+    }
 }

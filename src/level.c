@@ -236,14 +236,16 @@ bool IsEnemyBlocked(Enemy *enemy,
 
 void GameOver(Score *score, Menu *menu, Player *player)
 {
-    BeginDrawing();
-
-    ClearBackground(BLACK);
-
     const char gameOverText[] = "Game Over";
     const int gameOverTextSize = 160;
     const char *scoreText = TextFormat("Your score was: %d", score->value);
     const int scoreTextSize = 50;
+
+    WaitTime(1);
+
+    BeginDrawing();
+
+    ClearBackground(BLACK);
 
     DrawText(gameOverText,
              GetScreenWidth() / 2 - MeasureText(gameOverText, gameOverTextSize) / 2,
@@ -259,10 +261,14 @@ void GameOver(Score *score, Menu *menu, Player *player)
 
     EndDrawing();
 
+    ReadScoreName(score);
+
+    AddNewScoreToRanking(*score, RANKING_FILE_NAME);
+
     menu->display = true;
     menu->startGame = false;
 
+    player->dimensions = (Rectangle){0, 100, TILE_SIZE, TILE_SIZE};
+    player->canWalk = true;
     player->lives = PLAYER_MAX_LIVES;
-
-    WaitTime(3);
 }

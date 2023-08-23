@@ -1,10 +1,10 @@
 // Este arquivo lida com toda a lógica por trás das pontuações do jogo.
 
-#ifndef RANKING
+#ifndef RANKING_H
 
 #include <stdio.h>
 
-#define RANKING
+#define RANKING_H
 #define NAME_MAX_LENGTH 20              // Não permitir nomes maiores do que 20 caracteres.
 #define MAX_TOP_SCORES 5                // Serão apresentados somente as 5 maiores pontuações.
 #define RANKING_FILE_NAME "ranking.bin" // Nome do arquivo que guarda as pontuações.
@@ -30,4 +30,4 @@ void SaveScores(Score scores[MAX_TOP_SCORES], char rankingFileName[]);
 
 void ReadScoreName(Score *score);
 
-#endif // RANKING
+#endif // RANKING_H

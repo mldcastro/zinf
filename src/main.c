@@ -30,7 +30,7 @@ int main()
     char levelFile[] = "levels/level_1.txt";
     int level = 1;
     Score score;
-    score.value = 0;
+    score.value = 1700;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -78,6 +78,7 @@ int main()
 
         if (player.lives == 0) {
             GameOver(&score, &menu, &player);
+            shouldReadLayoutFile = true;
         }
     }
 
