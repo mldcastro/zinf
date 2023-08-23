@@ -10,18 +10,24 @@ int main()
     const int screenHeight = 860;
 
     bool exitWindow = false;
-    bool shouldReadLayoutFile = true;
 
-    Menu menu = {true, false, false, false};
-    Player player = {(Rectangle){0, 100, TILE_SIZE, TILE_SIZE}, true};
-    Enemy enemies[MAX_NUMBER_OF_ENEMIES];
-    Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES];
+    Menu menu;
+    menu.display = true;
+    menu.startGame = false;
+    menu.openScoreboard = false;
+    menu.exitGame = false;
+
+    Player player;
+    player.lives = PLAYER_MAX_LIVES;
+
+    EnvironmentObjects envObjects;
     Layout layout;
+    layout.shouldReadFile = true;
 
     char levelFile[] = "levels/level_1.txt";
-    int lives = 3;
     int level = 1;
-    int score = 0;
+    Score score;
+    score.value = 0;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -39,21 +45,22 @@ int main()
 
             ClearBackground(BLACK);
 
-            if (shouldReadLayoutFile) {
-                LoadLevelLayoutFromFile(levelFile, &layout, enemies, obstacles);
-                shouldReadLayoutFile = false;
+            if (layout.shouldReadFile) {
+                LoadLevelLayoutFromFile(levelFile, &layout, &player, &envObjects);
+                layout.shouldReadFile = false;
             }
 
             DrawMapFromMatrix(&layout);
-            DrawStatusBar(lives, level, score);
 
             float deltaTime = GetFrameTime();
 
-            UpdatePlayer(&player, deltaTime, obstacles);
+            UpdatePlayer(&player, deltaTime, &envObjects, &layout);
 
-            for (int i = 0; i < sizeof(enemies) / sizeof(enemies[0]); i++) {
-                UpdateEnemy(&enemies[i], deltaTime, obstacles);
+            for (int i = 0; i < envObjects.enemyCount; i++) {
+                UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
             }
+
+            DrawStatusBar(player.lives, level, score.value);
 
             EndDrawing();
 
@@ -64,6 +71,11 @@ int main()
                 menu.display = true;
                 menu.openScoreboard = false;
             }
+        }
+
+        if (player.lives == 0) {
+            GameOver(&score, &menu, &player);
+            layout.shouldReadFile = true;
         }
     }
 

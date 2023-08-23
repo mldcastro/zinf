@@ -1,12 +1,13 @@
 #include <raylib.h>
 #include <stdio.h>
+#include <string.h> // memset
 
 #include "level.h"
 
 void LoadLevelLayoutFromFile(char levelFileName[],
                              Layout *layout,
-                             Enemy enemies[MAX_NUMBER_OF_ENEMIES],
-                             Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+                             Player *player,
+                             EnvironmentObjects *envObjects)
 {
     FILE *levelFile;
     levelFile = fopen(levelFileName, "r");
@@ -16,8 +17,8 @@ void LoadLevelLayoutFromFile(char levelFileName[],
         return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
-    int enemyCount = 0;
-    int obstacleCount = 0;
+    envObjects->enemyCount = 0;
+    envObjects->obstacleCount = 0;
 
     for (int row = 0; row < LAYOUT_ROWS; row++) {
         for (int col = 0; col < LAYOUT_COLUMNS; col++) {
@@ -34,8 +35,8 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 enemy.moveHorizontally = (bool)((row + col) % 2);
                 enemy.reverse = (bool)((row + col) % 2);
 
-                enemies[enemyCount] = enemy;
-                enemyCount++;
+                envObjects->enemies[envObjects->enemyCount] = enemy;
+                (envObjects->enemyCount)++;
             }
 
             if (tile == 'P') {
@@ -45,8 +46,16 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 obstacle.dimensions.width = TILE_SIZE;
                 obstacle.dimensions.height = TILE_SIZE;
 
-                obstacles[obstacleCount] = obstacle;
-                obstacleCount++;
+                envObjects->obstacles[envObjects->obstacleCount] = obstacle;
+                (envObjects->obstacleCount)++;
+            }
+
+            if (tile == 'J') {
+                player->dimensions.x = col * TILE_SIZE;
+                player->dimensions.y = row * TILE_SIZE + STATUS_BAR_HEIGHT;
+                player->dimensions.width = TILE_SIZE;
+                player->dimensions.height = TILE_SIZE;
+                player->canWalk = true;
             }
         }
     }
@@ -83,42 +92,49 @@ void DrawStatusBar(int lives, int level, int score)
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
 }
 
-void UpdatePlayer(Player *player, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
+void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, Layout *layout)
 {
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
 
     float positionDelta = PLAYER_WALK_SPEED * delta;
     Vector2 deltaDirection = {0, 0};
 
-    if (IsKeyDown(KEY_LEFT)) {
+    if (IsKeyDown(KEY_A)) {
         deltaDirection = (Vector2){-positionDelta, 0};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x -= positionDelta;
             sprite = LoadTexture("sprites/Link_left.png");
         }
     }
-    if (IsKeyDown(KEY_RIGHT)) {
+    if (IsKeyDown(KEY_D)) {
         deltaDirection = (Vector2){positionDelta, 0};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x += positionDelta;
             sprite = LoadTexture("sprites/Link_right.png");
         }
     }
-    if (IsKeyDown(KEY_DOWN)) {
+    if (IsKeyDown(KEY_S)) {
         deltaDirection = (Vector2){0, positionDelta};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y += positionDelta;
         }
     }
-    if (IsKeyDown(KEY_UP)) {
+    if (IsKeyDown(KEY_W)) {
         deltaDirection = (Vector2){0, -positionDelta};
-        if (!IsPlayerBlocked(player, deltaDirection, obstacles)) {
+        if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y -= positionDelta;
             sprite = LoadTexture("sprites/Link_back.png");
         }
     }
 
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
+
+    for (int i = 0; i < envObjects->enemyCount; i++) {
+        if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
+            player->lives -= 1;
+            layout->shouldReadFile = true;
+        }
+    }
 }
 
 bool IsPlayerBlocked(Player *player,
@@ -147,6 +163,11 @@ bool IsPlayerBlocked(Player *player,
     }
     player->canWalk = true;
     return false;
+}
+
+bool WasPlayerHit(Player *player, Enemy *enemy)
+{
+    return CheckCollisionRecs(player->dimensions, enemy->dimensions);
 }
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
@@ -218,4 +239,46 @@ bool IsEnemyBlocked(Enemy *enemy,
         }
     }
     return false;
+}
+
+void GameOver(Score *score, Menu *menu, Player *player)
+{
+    const char gameOverText[] = "Game Over";
+    const int gameOverTextSize = 160;
+    const char *scoreText = TextFormat("Your score was: %d", score->value);
+    const int scoreTextSize = 50;
+
+    WaitTime(1);
+
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawText(gameOverText,
+             GetScreenWidth() / 2 - MeasureText(gameOverText, gameOverTextSize) / 2,
+             100,
+             gameOverTextSize,
+             YELLOW);
+
+    DrawText(scoreText,
+             GetScreenWidth() / 2 - MeasureText(scoreText, scoreTextSize) / 2,
+             300,
+             scoreTextSize,
+             YELLOW);
+
+    EndDrawing();
+
+    ReadScoreName(score);
+
+    AddNewScoreToRanking(*score, RANKING_FILE_NAME);
+
+    menu->display = true;
+    menu->startGame = false;
+
+    player->dimensions = (Rectangle){0, 100, TILE_SIZE, TILE_SIZE};
+    player->canWalk = true;
+    player->lives = PLAYER_MAX_LIVES;
+
+    memset(score->name, 0, NAME_MAX_LENGTH);
+    score->value = 0;
 }
