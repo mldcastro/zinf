@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <stdio.h>
+#include <string.h> // memset
 
 #include "level.h"
 
@@ -277,4 +278,7 @@ void GameOver(Score *score, Menu *menu, Player *player)
     player->dimensions = (Rectangle){0, 100, TILE_SIZE, TILE_SIZE};
     player->canWalk = true;
     player->lives = PLAYER_MAX_LIVES;
+
+    memset(score->name, 0, NAME_MAX_LENGTH);
+    score->value = 0;
 }
