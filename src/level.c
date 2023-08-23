@@ -125,6 +125,24 @@ void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, L
             player->dimensions.y -= positionDelta;
             sprite = LoadTexture("sprites/Link_back.png");
         }
+    
+    }
+    if (IsKeyDown(KEY_SPACE) && !player.attack.active) {        // ativa attack 
+        player->attack.active = true;
+        player->attack.dimensions.x = player.dimensions.x + player.dimensions.width;
+        player->attack.dimensions.y = player.dimensions.y;
+        player->attack.dimensions.width = 20; // Largura do ataque
+        player->attack.dimensions.height = player.dimensions.height;
+    }
+
+    if (player->attack.active) {
+        // Movimento do ataque
+        player->attack.dimensions.x += positionDelta;
+
+        // Desativação do ataque quando ele sai da tela
+        if (player->attack.dimensions.x > GetScreenWidth()) {
+            player->attack.active = false;
+        }
     }
 
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
@@ -210,8 +228,31 @@ void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBS
             }
         }
     }
+    
+    // Lógica para determinar se o inimigo deve atacar
+    if (ShouldEnemyAttack()) {
+        enemy->attack.active = true;
+        enemy->attack.dimensions.x = enemy->dimensions.x - enemy->attack.dimensions.width;
+        enemy->attack.dimensions.y = enemy->dimensions.y;
+        enemy->attack.dimensions.width = 20; // Largura do ataque
+        enemy->attack.dimensions.height = enemy->dimensions.height;
+    }
+    
+     // Atualização do ataque do inimigo
+    if (enemy->attack.active) {
+        enemy->attack.dimensions.x -= positionDelta;
 
+        if (enemy->attack.dimensions.x + enemy->attack.dimensions.width < 0) {
+            enemy->attack.active = false;
+        }
+    }
+
+    // Renderização do inimigo e seu ataque
     DrawTexture(sprite, enemy->dimensions.x, enemy->dimensions.y, WHITE);
+
+    if (enemy->attack.active) {
+        DrawRectangleRec(enemy->attack.dimensions, RED);
+    }
 }
 
 bool IsEnemyBlocked(Enemy *enemy,

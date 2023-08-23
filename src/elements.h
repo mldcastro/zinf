@@ -19,6 +19,7 @@ typedef struct Enemy {
     Rectangle dimensions;
     bool reverse;
     bool moveHorizontally;
+    Attack attack; // Adicione esse campo para o ataque do inimigo
 } Enemy;
 
 typedef struct Obstacle {
