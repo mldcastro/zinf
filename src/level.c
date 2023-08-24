@@ -17,8 +17,7 @@ void LoadLevelLayoutFromFile(char levelFileName[],
         return; // Se o arquivo não pôde ser aberto, então a função deve parar por aqui.
     }
 
-    envObjects->enemyCount = 0;
-    envObjects->obstacleCount = 0;
+    int enemyID = 0;
 
     for (int row = 0; row < LAYOUT_ROWS; row++) {
         for (int col = 0; col < LAYOUT_COLUMNS; col++) {
@@ -27,7 +26,16 @@ void LoadLevelLayoutFromFile(char levelFileName[],
             char tile = layout->matrix[row][col];
 
             if (tile == 'M') {
+                if (envObjects->deadEnemies > 0) {
+                    if (envObjects->enemies[enemyID].isDead) {
+                        enemyID++;
+                        continue;
+                    }
+                }
+                enemyID++;
+
                 Enemy enemy;
+                enemy.isDead = false;
                 enemy.dimensions.x = col * TILE_SIZE;
                 enemy.dimensions.y = row * TILE_SIZE + STATUS_BAR_HEIGHT;
                 enemy.dimensions.width = TILE_SIZE;
@@ -35,8 +43,10 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 enemy.moveHorizontally = (bool)((row + col) % 2);
                 enemy.reverse = (bool)((row + col) % 2);
 
-                envObjects->enemies[envObjects->enemyCount] = enemy;
-                (envObjects->enemyCount)++;
+                if (!layout->wasFileReadOnce) {
+                    envObjects->enemies[envObjects->enemyCount] = enemy;
+                    (envObjects->enemyCount)++;
+                }
             }
 
             if (tile == 'P') {
@@ -64,6 +74,8 @@ void LoadLevelLayoutFromFile(char levelFileName[],
     }
 
     fclose(levelFile);
+
+    layout->wasFileReadOnce = true;
 }
 
 void DrawMapFromMatrix(Layout *layout)
@@ -166,6 +178,12 @@ void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, L
     }
 
     for (int i = 0; i < envObjects->enemyCount; i++) {
+        if (!envObjects->enemies[i].isDead
+            && CheckCollisionRecs(player->attack, envObjects->enemies[i].dimensions)) {
+            envObjects->enemies[i].isDead = true;
+            (envObjects->deadEnemies)++;
+        }
+
         if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
             player->lives -= 1;
             layout->shouldReadFile = true;
@@ -203,11 +221,18 @@ bool IsPlayerBlocked(Player *player,
 
 bool WasPlayerHit(Player *player, Enemy *enemy)
 {
+    if (enemy->isDead) {
+        return false;
+    }
     return CheckCollisionRecs(player->dimensions, enemy->dimensions);
 }
 
 void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES])
 {
+    if (enemy->isDead) {
+        return;
+    }
+
     Texture2D sprite;
 
     float positionDelta = ENEMY_WALK_SPEED * delta;
@@ -247,7 +272,6 @@ void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBS
         }
     }
 
-    // Renderização do inimigo e seu ataque
     DrawTexture(sprite, enemy->dimensions.x, enemy->dimensions.y, WHITE);
 }
 
@@ -278,7 +302,7 @@ bool IsEnemyBlocked(Enemy *enemy,
     return false;
 }
 
-void GameOver(Score *score, Menu *menu, Player *player)
+void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envObjects)
 {
     const char gameOverText[] = "Game Over";
     const int gameOverTextSize = 160;
@@ -315,6 +339,13 @@ void GameOver(Score *score, Menu *menu, Player *player)
     player->dimensions = (Rectangle){0, 100, TILE_SIZE, TILE_SIZE};
     player->canWalk = true;
     player->lives = PLAYER_MAX_LIVES;
+
+    envObjects->enemyCount = 0;
+    envObjects->deadEnemies = 0;
+    envObjects->obstacleCount = 0;
+    for (int i = 0; i < envObjects->enemyCount; i++) {
+        envObjects->enemies[i].isDead = false;
+    }
 
     memset(score->name, 0, NAME_MAX_LENGTH);
     score->value = 0;

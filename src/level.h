@@ -13,6 +13,7 @@
 typedef struct Layout {
     char matrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
     bool shouldReadFile;
+    bool wasFileReadOnce;
 } Layout;
 
 void LoadLevelLayoutFromFile(char levelFileName[],
@@ -38,6 +39,6 @@ bool IsEnemyBlocked(Enemy *enemy,
                     Vector2 deltaDirection,
                     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
-void GameOver(Score *score, Menu *menu, Player *player);
+void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envObjects);
 
 #endif // LEVEL_H

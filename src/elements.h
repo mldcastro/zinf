@@ -19,6 +19,7 @@ typedef struct Player {
 
 typedef struct Enemy {
     Rectangle dimensions;
+    bool isDead;
     bool reverse;
     bool moveHorizontally;
 } Enemy;
@@ -31,6 +32,7 @@ typedef struct EnvironmentObjects {
     Enemy enemies[MAX_NUMBER_OF_ENEMIES];
     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES];
     int enemyCount;
+    int deadEnemies;
     int obstacleCount;
 } EnvironmentObjects;
 

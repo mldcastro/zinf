@@ -21,8 +21,13 @@ int main()
     player.lives = PLAYER_MAX_LIVES;
 
     EnvironmentObjects envObjects;
+    envObjects.enemyCount = 0;
+    envObjects.obstacleCount = 0;
+    envObjects.deadEnemies = 0;
+
     Layout layout;
     layout.shouldReadFile = true;
+    layout.wasFileReadOnce = false;
 
     char levelFile[] = "levels/level_1.txt";
     int level = 1;
@@ -74,8 +79,9 @@ int main()
         }
 
         if (player.lives == 0) {
-            GameOver(&score, &menu, &player);
+            GameOver(&score, &menu, &player, &envObjects);
             layout.shouldReadFile = true;
+            layout.wasFileReadOnce = false;
         }
     }
 
