@@ -1,5 +1,4 @@
 #include <raylib.h>
-#include <string.h>
 
 #include "level.h"
 
@@ -236,21 +235,9 @@ void GameOver(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *en
 
     AddNewScoreToRanking(player->score, RANKING_FILE_NAME);
 
-    menu->display = true;
-    menu->startGame = false;
-    menu->openScoreboard = false;
-    menu->exitGame = false;
-
-    player->lives = PLAYER_MAX_LIVES;
-    player->score.value = 0;
-    memset(player->score.name, 0, NAME_MAX_LENGTH);
-
-    envObjects->enemyCount = 0;
-    envObjects->obstacleCount = 0;
-    envObjects->deadEnemies = 0;
-    for (int i = 0; i < envObjects->enemyCount; i++) {
-        envObjects->enemies[i].isDead = false;
-    }
+    ResetPlayer(player);
+    ResetEnvironmentObjects(envObjects);
+    ResetMenu(menu);
 
     layout->shouldReadFile = true;
     layout->wasFileReadOnce = false;

@@ -72,8 +72,6 @@ void LoadLevelLayoutFromFile(Layout *layout, Player *player, EnvironmentObjects 
     }
 
     fclose(levelFile);
-
-    layout->wasFileReadOnce = true;
 }
 
 void DrawMapFromMatrix(Layout *layout)
@@ -103,4 +101,19 @@ void DrawStatusBar(int lives, int level, int score)
     DrawText(TextFormat("Lives: %02i", lives), initialXPosition, yPosition, 25, BLUE);
     DrawText(TextFormat("Level: %02i", level), initialXPosition + 300, yPosition, 25, BLUE);
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
+}
+
+void GetLevel(Layout *layout)
+{
+    char levels[NUMBER_OF_LEVELS][PATH_TO_LEVEL_LENGTH] = {
+        "levels/level_1.txt",
+        "levels/level_2.txt",
+    };
+
+    layout->shouldReadFile = true;
+    layout->wasFileReadOnce = false;
+
+    for (int i = 0; i < PATH_TO_LEVEL_LENGTH; i++) {
+        layout->file[i] = levels[layout->level - 1][i];
+    }
 }

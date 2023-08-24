@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stdlib.h>
 #include <string.h> // memset
 
 #include "main.h"
@@ -16,8 +17,6 @@ int main()
     EnvironmentObjects envObjects;
 
     InitialSetup(&menu, &layout, &player, &envObjects);
-
-    int level = 1;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -38,6 +37,7 @@ int main()
             if (layout.shouldReadFile) {
                 LoadLevelLayoutFromFile(&layout, &player, &envObjects);
                 layout.shouldReadFile = false;
+                layout.wasFileReadOnce = true;
             }
 
             DrawMapFromMatrix(&layout);
@@ -50,7 +50,15 @@ int main()
                 UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
             }
 
-            DrawStatusBar(player.lives, level, player.score.value);
+            DrawStatusBar(player.lives, layout.level, player.score.value);
+
+            if (AreAllEnemiesDead(&envObjects)) {
+                if (layout.level <= NUMBER_OF_LEVELS) {
+                    (layout.level)++;
+                    GetLevel(&layout);
+                    ResetEnvironmentObjects(&envObjects);
+                }
+            }
 
             EndDrawing();
 
@@ -88,7 +96,6 @@ void InitialSetup(Menu *menu, Layout *layout, Player *player, EnvironmentObjects
     envObjects->obstacleCount = 0;
     envObjects->deadEnemies = 0;
 
-    layout->file = "levels/level_1.txt";
-    layout->shouldReadFile = true;
-    layout->wasFileReadOnce = false;
+    layout->level = 1;
+    GetLevel(layout);
 }

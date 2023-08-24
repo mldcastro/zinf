@@ -14,4 +14,6 @@ void DisplayMenu(Menu *menu,
                  int screenWidth,
                  int screenHeight); // Função que irá mostrar o menu na tela
 
+void ResetMenu(Menu *menu);
+
 #endif
