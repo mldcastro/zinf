@@ -182,6 +182,8 @@ void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, L
             && CheckCollisionRecs(player->attack, envObjects->enemies[i].dimensions)) {
             envObjects->enemies[i].isDead = true;
             (envObjects->deadEnemies)++;
+
+            player->score.value += SCORE_INCREMENT;
         }
 
         if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
@@ -302,11 +304,15 @@ bool IsEnemyBlocked(Enemy *enemy,
     return false;
 }
 
-void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envObjects)
+bool AreAllEnemiesDead(EnvironmentObjects *envObjects) {
+    return (envObjects->deadEnemies == envObjects->enemyCount);
+}
+
+void GameOver(Menu *menu, Player *player, EnvironmentObjects *envObjects)
 {
     const char gameOverText[] = "Game Over";
     const int gameOverTextSize = 160;
-    const char *scoreText = TextFormat("Your score was: %d", score->value);
+    const char *scoreText = TextFormat("Your score was: %d", player->score.value);
     const int scoreTextSize = 50;
 
     WaitTime(1);
@@ -329,9 +335,9 @@ void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envO
 
     EndDrawing();
 
-    ReadScoreName(score);
+    ReadScoreName(&(player->score));
 
-    AddNewScoreToRanking(*score, RANKING_FILE_NAME);
+    AddNewScoreToRanking(player->score, RANKING_FILE_NAME);
 
     menu->display = true;
     menu->startGame = false;
@@ -347,6 +353,6 @@ void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envO
         envObjects->enemies[i].isDead = false;
     }
 
-    memset(score->name, 0, NAME_MAX_LENGTH);
-    score->value = 0;
+    memset(player->score.name, 0, NAME_MAX_LENGTH);
+    player->score.value = 0;
 }

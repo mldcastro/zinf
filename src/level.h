@@ -39,6 +39,8 @@ bool IsEnemyBlocked(Enemy *enemy,
                     Vector2 deltaDirection,
                     Obstacle obstacles[MAX_NUMBER_OF_OBSTACLES]);
 
-void GameOver(Score *score, Menu *menu, Player *player, EnvironmentObjects *envObjects);
+bool AreAllEnemiesDead(EnvironmentObjects *envObjects);
+
+void GameOver(Menu *menu, Player *player, EnvironmentObjects *envObjects);
 
 #endif // LEVEL_H

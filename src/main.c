@@ -19,6 +19,7 @@ int main()
 
     Player player;
     player.lives = PLAYER_MAX_LIVES;
+    player.score.value = 0;
 
     EnvironmentObjects envObjects;
     envObjects.enemyCount = 0;
@@ -31,8 +32,6 @@ int main()
 
     char levelFile[] = "levels/level_1.txt";
     int level = 1;
-    Score score;
-    score.value = 0;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -65,7 +64,7 @@ int main()
                 UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
             }
 
-            DrawStatusBar(player.lives, level, score.value);
+            DrawStatusBar(player.lives, level, player.score.value);
 
             EndDrawing();
 
@@ -79,7 +78,7 @@ int main()
         }
 
         if (player.lives == 0) {
-            GameOver(&score, &menu, &player, &envObjects);
+            GameOver(&menu, &player, &envObjects);
             layout.shouldReadFile = true;
             layout.wasFileReadOnce = false;
         }
