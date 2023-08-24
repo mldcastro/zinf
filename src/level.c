@@ -238,7 +238,42 @@ void GameOver(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *en
     ResetPlayer(player);
     ResetEnvironmentObjects(envObjects);
     ResetMenu(menu);
+    ResetLayout(layout);
+}
 
-    layout->shouldReadFile = true;
-    layout->wasFileReadOnce = false;
+void GameWon(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects)
+{
+    const char gameWonText[] = "You Win!!!";
+    const int gameWonTextSize = 160;
+    const char *scoreText = TextFormat("Your score was: %d", player->score.value);
+    const int scoreTextSize = 50;
+
+    WaitTime(1);
+
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawText(gameWonText,
+             GetScreenWidth() / 2 - MeasureText(gameWonText, gameWonTextSize) / 2,
+             100,
+             gameWonTextSize,
+             YELLOW);
+
+    DrawText(scoreText,
+             GetScreenWidth() / 2 - MeasureText(scoreText, scoreTextSize) / 2,
+             300,
+             scoreTextSize,
+             YELLOW);
+
+    EndDrawing();
+
+    ReadScoreName(&(player->score));
+
+    AddNewScoreToRanking(player->score, RANKING_FILE_NAME);
+
+    ResetPlayer(player);
+    ResetEnvironmentObjects(envObjects);
+    ResetMenu(menu);
+    ResetLayout(layout);
 }

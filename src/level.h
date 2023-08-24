@@ -25,4 +25,6 @@ bool AreAllEnemiesDead(EnvironmentObjects *envObjects);
 
 void GameOver(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects);
 
+void GameWon(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects);
+
 #endif // LEVEL_H

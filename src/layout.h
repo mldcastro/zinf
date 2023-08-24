@@ -26,4 +26,6 @@ void DrawStatusBar(int lives, int level, int score);
 
 void GetLevel(Layout *layout);
 
+void ResetLayout(Layout *layout);
+
 #endif // LAYOUT_H

@@ -1,6 +1,5 @@
 #include <raylib.h>
 #include <stdlib.h>
-#include <string.h> // memset
 
 #include "main.h"
 
@@ -52,14 +51,6 @@ int main()
 
             DrawStatusBar(player.lives, layout.level, player.score.value);
 
-            if (AreAllEnemiesDead(&envObjects)) {
-                if (layout.level <= NUMBER_OF_LEVELS) {
-                    (layout.level)++;
-                    GetLevel(&layout);
-                    ResetEnvironmentObjects(&envObjects);
-                }
-            }
-
             EndDrawing();
 
         } else if (menu.openScoreboard) {
@@ -74,6 +65,16 @@ int main()
         if (player.lives == 0) {
             GameOver(&menu, &layout, &player, &envObjects);
         }
+
+        if (envObjects.deadEnemies > 0 && AreAllEnemiesDead(&envObjects)) {
+            (layout.level)++;
+            if (layout.level <= NUMBER_OF_LEVELS) {
+                GetLevel(&layout);
+                ResetEnvironmentObjects(&envObjects);
+            } else {
+                GameWon(&menu, &layout, &player, &envObjects);
+            }
+        }
     }
 
     CloseWindow();
@@ -83,14 +84,8 @@ int main()
 
 void InitialSetup(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects)
 {
-    menu->display = true;
-    menu->startGame = false;
-    menu->openScoreboard = false;
-    menu->exitGame = false;
-
-    player->lives = PLAYER_MAX_LIVES;
-    player->score.value = 0;
-    memset(player->score.name, 0, NAME_MAX_LENGTH);
+    ResetMenu(menu);
+    ResetPlayer(player);
 
     envObjects->enemyCount = 0;
     envObjects->obstacleCount = 0;

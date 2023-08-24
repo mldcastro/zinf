@@ -117,3 +117,10 @@ void GetLevel(Layout *layout)
         layout->file[i] = levels[layout->level - 1][i];
     }
 }
+
+void ResetLayout(Layout *layout)
+{
+    layout->shouldReadFile = true;
+    layout->wasFileReadOnce = false;
+    layout->level = 1;
+}
