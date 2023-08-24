@@ -1,5 +1,4 @@
 #include <raylib.h>
-#include <string.h>
 
 #include "level.h"
 
@@ -236,22 +235,45 @@ void GameOver(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *en
 
     AddNewScoreToRanking(player->score, RANKING_FILE_NAME);
 
-    menu->display = true;
-    menu->startGame = false;
-    menu->openScoreboard = false;
-    menu->exitGame = false;
+    ResetPlayer(player);
+    ResetEnvironmentObjects(envObjects);
+    ResetMenu(menu);
+    ResetLayout(layout);
+}
 
-    player->lives = PLAYER_MAX_LIVES;
-    player->score.value = 0;
-    memset(player->score.name, 0, NAME_MAX_LENGTH);
+void GameWon(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects)
+{
+    const char gameWonText[] = "You Win!!!";
+    const int gameWonTextSize = 160;
+    const char *scoreText = TextFormat("Your score was: %d", player->score.value);
+    const int scoreTextSize = 50;
 
-    envObjects->enemyCount = 0;
-    envObjects->obstacleCount = 0;
-    envObjects->deadEnemies = 0;
-    for (int i = 0; i < envObjects->enemyCount; i++) {
-        envObjects->enemies[i].isDead = false;
-    }
+    WaitTime(1);
 
-    layout->shouldReadFile = true;
-    layout->wasFileReadOnce = false;
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawText(gameWonText,
+             GetScreenWidth() / 2 - MeasureText(gameWonText, gameWonTextSize) / 2,
+             100,
+             gameWonTextSize,
+             YELLOW);
+
+    DrawText(scoreText,
+             GetScreenWidth() / 2 - MeasureText(scoreText, scoreTextSize) / 2,
+             300,
+             scoreTextSize,
+             YELLOW);
+
+    EndDrawing();
+
+    ReadScoreName(&(player->score));
+
+    AddNewScoreToRanking(player->score, RANKING_FILE_NAME);
+
+    ResetPlayer(player);
+    ResetEnvironmentObjects(envObjects);
+    ResetMenu(menu);
+    ResetLayout(layout);
 }

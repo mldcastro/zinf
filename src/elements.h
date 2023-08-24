@@ -39,4 +39,8 @@ typedef struct EnvironmentObjects {
     int obstacleCount;
 } EnvironmentObjects;
 
+void ResetPlayer(Player *player);
+
+void ResetEnvironmentObjects(EnvironmentObjects *envObjects);
+
 #endif // ELEMENTS_H

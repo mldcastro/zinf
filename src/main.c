@@ -1,5 +1,5 @@
 #include <raylib.h>
-#include <string.h> // memset
+#include <stdlib.h>
 
 #include "main.h"
 
@@ -16,9 +16,6 @@ int main()
     EnvironmentObjects envObjects;
 
     InitialSetup(&menu, &layout, &player, &envObjects);
-
-    char levelFile[] = "levels/level_1.txt";
-    int level = 1;
 
     InitWindow(screenWidth, screenHeight, "Menu");
 
@@ -37,8 +34,9 @@ int main()
             ClearBackground(BLACK);
 
             if (layout.shouldReadFile) {
-                LoadLevelLayoutFromFile(levelFile, &layout, &player, &envObjects);
+                LoadLevelLayoutFromFile(&layout, &player, &envObjects);
                 layout.shouldReadFile = false;
+                layout.wasFileReadOnce = true;
             }
 
             DrawMapFromMatrix(&layout);
@@ -51,7 +49,7 @@ int main()
                 UpdateEnemy(&(envObjects.enemies[i]), deltaTime, envObjects.obstacles);
             }
 
-            DrawStatusBar(player.lives, level, player.score.value);
+            DrawStatusBar(player.lives, layout.level, player.score.value);
 
             EndDrawing();
 
@@ -67,6 +65,16 @@ int main()
         if (player.lives == 0) {
             GameOver(&menu, &layout, &player, &envObjects);
         }
+
+        if (envObjects.deadEnemies > 0 && AreAllEnemiesDead(&envObjects)) {
+            (layout.level)++;
+            if (layout.level <= NUMBER_OF_LEVELS) {
+                GetLevel(&layout);
+                ResetEnvironmentObjects(&envObjects);
+            } else {
+                GameWon(&menu, &layout, &player, &envObjects);
+            }
+        }
     }
 
     CloseWindow();
@@ -76,19 +84,13 @@ int main()
 
 void InitialSetup(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects)
 {
-    menu->display = true;
-    menu->startGame = false;
-    menu->openScoreboard = false;
-    menu->exitGame = false;
-
-    player->lives = PLAYER_MAX_LIVES;
-    player->score.value = 0;
-    memset(player->score.name, 0, NAME_MAX_LENGTH);
+    ResetMenu(menu);
+    ResetPlayer(player);
 
     envObjects->enemyCount = 0;
     envObjects->obstacleCount = 0;
     envObjects->deadEnemies = 0;
 
-    layout->shouldReadFile = true;
-    layout->wasFileReadOnce = false;
+    layout->level = 1;
+    GetLevel(layout);
 }

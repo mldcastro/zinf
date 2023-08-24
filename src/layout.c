@@ -3,13 +3,10 @@
 
 #include "layout.h"
 
-void LoadLevelLayoutFromFile(char levelFileName[],
-                             Layout *layout,
-                             Player *player,
-                             EnvironmentObjects *envObjects)
+void LoadLevelLayoutFromFile(Layout *layout, Player *player, EnvironmentObjects *envObjects)
 {
     FILE *levelFile;
-    levelFile = fopen(levelFileName, "r");
+    levelFile = fopen(layout->file, "r");
 
     if (levelFile == NULL) {
         printf("Could not open the file.\n");
@@ -31,7 +28,6 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                         continue;
                     }
                 }
-                enemyID++;
 
                 Enemy enemy;
                 enemy.isDead = false;
@@ -42,8 +38,11 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 enemy.moveHorizontally = (bool)((row + col) % 2);
                 enemy.reverse = (bool)((row + col) % 2);
 
+                envObjects->enemies[enemyID] = enemy;
+
+                enemyID++;
+
                 if (!layout->wasFileReadOnce) {
-                    envObjects->enemies[envObjects->enemyCount] = enemy;
                     (envObjects->enemyCount)++;
                 }
             }
@@ -73,8 +72,6 @@ void LoadLevelLayoutFromFile(char levelFileName[],
     }
 
     fclose(levelFile);
-
-    layout->wasFileReadOnce = true;
 }
 
 void DrawMapFromMatrix(Layout *layout)
@@ -104,4 +101,26 @@ void DrawStatusBar(int lives, int level, int score)
     DrawText(TextFormat("Lives: %02i", lives), initialXPosition, yPosition, 25, BLUE);
     DrawText(TextFormat("Level: %02i", level), initialXPosition + 300, yPosition, 25, BLUE);
     DrawText(TextFormat("Score: %02i", score), initialXPosition + 600, yPosition, 25, BLUE);
+}
+
+void GetLevel(Layout *layout)
+{
+    char levels[NUMBER_OF_LEVELS][PATH_TO_LEVEL_LENGTH] = {
+        "levels/level_1.txt",
+        "levels/level_2.txt",
+    };
+
+    layout->shouldReadFile = true;
+    layout->wasFileReadOnce = false;
+
+    for (int i = 0; i < PATH_TO_LEVEL_LENGTH; i++) {
+        layout->file[i] = levels[layout->level - 1][i];
+    }
+}
+
+void ResetLayout(Layout *layout)
+{
+    layout->shouldReadFile = true;
+    layout->wasFileReadOnce = false;
+    layout->level = 1;
 }

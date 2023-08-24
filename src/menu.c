@@ -47,3 +47,11 @@ void DisplayMenu(Menu *menu, int screenWidth, int screenHeight)
         }
     }
 }
+
+void ResetMenu(Menu *menu)
+{
+    menu->display = true;
+    menu->startGame = false;
+    menu->openScoreboard = false;
+    menu->exitGame = false;
+}
