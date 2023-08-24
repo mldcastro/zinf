@@ -55,6 +55,9 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 player->dimensions.y = row * TILE_SIZE + STATUS_BAR_HEIGHT;
                 player->dimensions.width = TILE_SIZE;
                 player->dimensions.height = TILE_SIZE;
+                player->attack.width = TILE_SIZE;
+                player->attack.height = TILE_SIZE;
+                player->attacked = false;
                 player->canWalk = true;
             }
         }
@@ -95,6 +98,7 @@ void DrawStatusBar(int lives, int level, int score)
 void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, Layout *layout)
 {
     Texture2D sprite = LoadTexture("sprites/Link_front.png");
+    Texture2D attackSprite = LoadTexture("sprites/Attack_down.png");
 
     float positionDelta = PLAYER_WALK_SPEED * delta;
     Vector2 deltaDirection = {0, 0};
@@ -105,47 +109,61 @@ void UpdatePlayer(Player *player, float delta, EnvironmentObjects *envObjects, L
             player->dimensions.x -= positionDelta;
             sprite = LoadTexture("sprites/Link_left.png");
         }
-    }
-    if (IsKeyDown(KEY_D)) {
+
+        if (IsKeyDown(KEY_J)) {
+            player->attack.x = player->dimensions.x - TILE_SIZE;
+            player->attack.y = player->dimensions.y;
+            player->attacked = true;
+
+            attackSprite = LoadTexture("sprites/Attack_left.png");
+        }
+    } else if (IsKeyDown(KEY_D)) {
         deltaDirection = (Vector2){positionDelta, 0};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.x += positionDelta;
             sprite = LoadTexture("sprites/Link_right.png");
         }
-    }
-    if (IsKeyDown(KEY_S)) {
+
+        if (IsKeyDown(KEY_J)) {
+            player->attack.x = player->dimensions.x + TILE_SIZE;
+            player->attack.y = player->dimensions.y;
+            player->attacked = true;
+
+            attackSprite = LoadTexture("sprites/Attack_right.png");
+        }
+    } else if (IsKeyDown(KEY_S)) {
         deltaDirection = (Vector2){0, positionDelta};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y += positionDelta;
         }
-    }
-    if (IsKeyDown(KEY_W)) {
+
+        if (IsKeyDown(KEY_J)) {
+            player->attack.x = player->dimensions.x;
+            player->attack.y = player->dimensions.y + TILE_SIZE;
+            player->attacked = true;
+        }
+    } else if (IsKeyDown(KEY_W)) {
         deltaDirection = (Vector2){0, -positionDelta};
         if (!IsPlayerBlocked(player, deltaDirection, envObjects->obstacles)) {
             player->dimensions.y -= positionDelta;
             sprite = LoadTexture("sprites/Link_back.png");
         }
-    
-    }
-    if (IsKeyDown(KEY_SPACE) && !player.attack.active) {        // ativa attack 
-        player->attack.active = true;
-        player->attack.dimensions.x = player.dimensions.x + player.dimensions.width;
-        player->attack.dimensions.y = player.dimensions.y;
-        player->attack.dimensions.width = 20; // Largura do ataque
-        player->attack.dimensions.height = player.dimensions.height;
-    }
 
-    if (player->attack.active) {
-        // Movimento do ataque
-        player->attack.dimensions.x += positionDelta;
+        if (IsKeyDown(KEY_J)) {
+            player->attack.x = player->dimensions.x;
+            player->attack.y = player->dimensions.y - TILE_SIZE;
+            player->attacked = true;
 
-        // Desativação do ataque quando ele sai da tela
-        if (player->attack.dimensions.x > GetScreenWidth()) {
-            player->attack.active = false;
+            attackSprite = LoadTexture("sprites/Attack_up.png");
         }
     }
 
     DrawTexture(sprite, player->dimensions.x, player->dimensions.y, WHITE);
+    if (player->attacked) {
+        DrawTexture(attackSprite, player->attack.x, player->attack.y, WHITE);
+
+        player->attacked = false;
+    }
 
     for (int i = 0; i < envObjects->enemyCount; i++) {
         if (WasPlayerHit(player, &(envObjects->enemies[i]))) {
@@ -228,31 +246,9 @@ void UpdateEnemy(Enemy *enemy, float delta, Obstacle obstacles[MAX_NUMBER_OF_OBS
             }
         }
     }
-    
-    // Lógica para determinar se o inimigo deve atacar
-    if (ShouldEnemyAttack()) {
-        enemy->attack.active = true;
-        enemy->attack.dimensions.x = enemy->dimensions.x - enemy->attack.dimensions.width;
-        enemy->attack.dimensions.y = enemy->dimensions.y;
-        enemy->attack.dimensions.width = 20; // Largura do ataque
-        enemy->attack.dimensions.height = enemy->dimensions.height;
-    }
-    
-     // Atualização do ataque do inimigo
-    if (enemy->attack.active) {
-        enemy->attack.dimensions.x -= positionDelta;
-
-        if (enemy->attack.dimensions.x + enemy->attack.dimensions.width < 0) {
-            enemy->attack.active = false;
-        }
-    }
 
     // Renderização do inimigo e seu ataque
     DrawTexture(sprite, enemy->dimensions.x, enemy->dimensions.y, WHITE);
-
-    if (enemy->attack.active) {
-        DrawRectangleRec(enemy->attack.dimensions, RED);
-    }
 }
 
 bool IsEnemyBlocked(Enemy *enemy,
