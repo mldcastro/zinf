@@ -3,13 +3,10 @@
 
 #include "layout.h"
 
-void LoadLevelLayoutFromFile(char levelFileName[],
-                             Layout *layout,
-                             Player *player,
-                             EnvironmentObjects *envObjects)
+void LoadLevelLayoutFromFile(Layout *layout, Player *player, EnvironmentObjects *envObjects)
 {
     FILE *levelFile;
-    levelFile = fopen(levelFileName, "r");
+    levelFile = fopen(layout->file, "r");
 
     if (levelFile == NULL) {
         printf("Could not open the file.\n");
@@ -31,7 +28,6 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                         continue;
                     }
                 }
-                enemyID++;
 
                 Enemy enemy;
                 enemy.isDead = false;
@@ -42,8 +38,11 @@ void LoadLevelLayoutFromFile(char levelFileName[],
                 enemy.moveHorizontally = (bool)((row + col) % 2);
                 enemy.reverse = (bool)((row + col) % 2);
 
+                envObjects->enemies[enemyID] = enemy;
+
+                enemyID++;
+
                 if (!layout->wasFileReadOnce) {
-                    envObjects->enemies[envObjects->enemyCount] = enemy;
                     (envObjects->enemyCount)++;
                 }
             }

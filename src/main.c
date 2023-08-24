@@ -17,7 +17,6 @@ int main()
 
     InitialSetup(&menu, &layout, &player, &envObjects);
 
-    char levelFile[] = "levels/level_1.txt";
     int level = 1;
 
     InitWindow(screenWidth, screenHeight, "Menu");
@@ -37,7 +36,7 @@ int main()
             ClearBackground(BLACK);
 
             if (layout.shouldReadFile) {
-                LoadLevelLayoutFromFile(levelFile, &layout, &player, &envObjects);
+                LoadLevelLayoutFromFile(&layout, &player, &envObjects);
                 layout.shouldReadFile = false;
             }
 
@@ -89,6 +88,7 @@ void InitialSetup(Menu *menu, Layout *layout, Player *player, EnvironmentObjects
     envObjects->obstacleCount = 0;
     envObjects->deadEnemies = 0;
 
+    layout->file = "levels/level_1.txt";
     layout->shouldReadFile = true;
     layout->wasFileReadOnce = false;
 }

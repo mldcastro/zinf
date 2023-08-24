@@ -129,7 +129,9 @@ void ShowScores(char rankingFileName[])
 
 void ReadScoreName(Score *score)
 {
-    Rectangle textBox = {350, 400, 500, 80};
+    Rectangle textBox = {350, 500, 500, 80};
+    const char askForNameText[] = "Enter your name:";
+    const int askForNameTextSize = 50;
     int letterCount = 0;
 
     while (!IsKeyPressed(KEY_ENTER)) {
@@ -154,6 +156,12 @@ void ReadScoreName(Score *score)
         }
 
         BeginDrawing();
+
+        DrawText(askForNameText,
+                 GetScreenWidth() / 2 - MeasureText(askForNameText, askForNameTextSize) / 2,
+                 400,
+                 askForNameTextSize,
+                 YELLOW);
 
         DrawRectangleRec(textBox, LIGHTGRAY);
 

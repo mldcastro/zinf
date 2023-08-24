@@ -10,14 +10,12 @@
 
 typedef struct Layout {
     char matrix[LAYOUT_ROWS][LAYOUT_COLUMNS];
+    char *file;
     bool shouldReadFile;
     bool wasFileReadOnce;
 } Layout;
 
-void LoadLevelLayoutFromFile(char levelFileName[],
-                             Layout *layout,
-                             Player *player,
-                             EnvironmentObjects *envObjects);
+void LoadLevelLayoutFromFile(Layout *layout, Player *player, EnvironmentObjects *envObjects);
 
 void DrawMapFromMatrix(Layout *layout);
 
