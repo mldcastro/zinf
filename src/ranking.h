@@ -2,8 +2,6 @@
 
 #ifndef RANKING_H
 
-#include <stdio.h>
-
 #define RANKING_H
 #define NAME_MAX_LENGTH 20              // Não permitir nomes maiores do que 20 caracteres.
 #define MAX_TOP_SCORES 5                // Serão apresentados somente as 5 maiores pontuações.

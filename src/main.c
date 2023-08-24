@@ -1,8 +1,7 @@
 #include <raylib.h>
+#include <string.h> // memset
 
-#include "level.h"
-#include "menu.h"
-#include "ranking.h"
+#include "main.h"
 
 int main()
 {
@@ -12,23 +11,11 @@ int main()
     bool exitWindow = false;
 
     Menu menu;
-    menu.display = true;
-    menu.startGame = false;
-    menu.openScoreboard = false;
-    menu.exitGame = false;
-
-    Player player;
-    player.lives = PLAYER_MAX_LIVES;
-    player.score.value = 0;
-
-    EnvironmentObjects envObjects;
-    envObjects.enemyCount = 0;
-    envObjects.obstacleCount = 0;
-    envObjects.deadEnemies = 0;
-
     Layout layout;
-    layout.shouldReadFile = true;
-    layout.wasFileReadOnce = false;
+    Player player;
+    EnvironmentObjects envObjects;
+
+    InitialSetup(&menu, &layout, &player, &envObjects);
 
     char levelFile[] = "levels/level_1.txt";
     int level = 1;
@@ -78,13 +65,30 @@ int main()
         }
 
         if (player.lives == 0) {
-            GameOver(&menu, &player, &envObjects);
-            layout.shouldReadFile = true;
-            layout.wasFileReadOnce = false;
+            GameOver(&menu, &layout, &player, &envObjects);
         }
     }
 
     CloseWindow();
 
     return 0;
+}
+
+void InitialSetup(Menu *menu, Layout *layout, Player *player, EnvironmentObjects *envObjects)
+{
+    menu->display = true;
+    menu->startGame = false;
+    menu->openScoreboard = false;
+    menu->exitGame = false;
+
+    player->lives = PLAYER_MAX_LIVES;
+    player->score.value = 0;
+    memset(player->score.name, 0, NAME_MAX_LENGTH);
+
+    envObjects->enemyCount = 0;
+    envObjects->obstacleCount = 0;
+    envObjects->deadEnemies = 0;
+
+    layout->shouldReadFile = true;
+    layout->wasFileReadOnce = false;
 }
